@@ -1,9 +1,15 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { useAuthStore } from "@/store/authStore";
+import { createFileRoute, Outlet } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/cart")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
-  return <div>Hello "/cart"!</div>;
+  const { isAuthenticated } = useAuthStore();
+  return isAuthenticated ? (
+    <Outlet />
+  ) : (
+    <div>Please log in to view your cart.</div>
+  );
 }

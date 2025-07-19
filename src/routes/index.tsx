@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBasket, Shirt } from "lucide-react";
 import BrowseCategory from "@/components/BrowseCategory";
 import CardContainer from "@/components/CardContainer";
+import { useEffect } from "react";
+import { useAuthStore } from "@/store/authStore";
 
 // const systemFont =
 //   '-apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif';
@@ -15,6 +17,11 @@ export const Route = createFileRoute("/")({
 });
 
 function App() {
+  const initialize = useAuthStore((s) => s.initialize);
+
+  useEffect(() => {
+    initialize(); // checks localStorage
+  }, []);
   return (
     <div>
       <div className="relative w-full overflow-hidden">

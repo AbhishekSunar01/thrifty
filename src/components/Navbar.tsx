@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
-import { Button } from "./ui/button";
-import { ShoppingCart, Flower, LogIn } from "lucide-react";
+import { ShoppingCart, Flower, UserCircle } from "lucide-react";
 import { Register } from "./RegisterForm";
 import { Login } from "./LoginForm";
+import { useAuthStore } from "@/store/authStore";
+import { Logout } from "./Logout";
+import { Button } from "./ui/button";
 
 export default function Navbar() {
+  const { isAuthenticated, username } = useAuthStore();
   return (
     <div className="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-24 py-6 border-b bg-background/70 backdrop-blur-md">
       <h1 className="text-2xl font-bold flex items-center gap-1">
@@ -21,8 +24,20 @@ export default function Navbar() {
           </Link>
         </li>
         <li className="flex gap-2 items-center">
-          <Login />
-          <Register />
+          {isAuthenticated ? (
+            <div className="flex items-center gap-2">
+              <Button variant="secondary">
+                <UserCircle className="w-4 h-4" />
+                {username}
+              </Button>
+              <Logout />
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Login />
+              <Register />
+            </div>
+          )}
         </li>
       </ul>
     </div>
