@@ -1,13 +1,20 @@
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { Form, FormDescription, FormMessage } from "./ui/form";
-import { FormControl, FormField, FormItem, FormLabel } from "./ui/form";
-import { Input } from "./ui/input";
-import { Button } from "./ui/button";
-import { useLogin } from "@/services/mutation";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
+import { Input } from "../ui/input";
+import { Button } from "../ui/button";
+import { useRegister } from "@/services/mutation";
 import { toast } from "sonner";
-import { useNavigate } from "@tanstack/react-router";
 import {
   Dialog,
   DialogClose,
@@ -18,57 +25,56 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { LogIn } from "lucide-react";
 
 const formSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
   password: z.string().min(6, {
     message: "Password must be at least 6 characters.",
   }),
+  role: z.enum(["USER", "admin"]),
 });
 
-export function Login() {
-  const navigate = useNavigate();
-  const login = useLogin();
+export function Register() {
+  const [open, setOpen] = useState(false);
+  const register = useRegister();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
+      role: "USER",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    login.mutate(values, {
+    register.mutate(values, {
       onSuccess: () => {
-        const response = login?.data;
-        toast.success("Login successful!", response?.data || "Welcome back!");
+        toast.success("Registration successful!");
         form.reset();
-        navigate({ to: "/" });
+        setOpen(false); // Close the dialog
       },
       onError: () => {
-        toast.error("Login failed. Please try again.");
+        toast.error("Registration failed. Please try again.");
       },
     });
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="outline">
-          Login
-          <LogIn className="w-4 h-4 ml-1" />
-        </Button>
+        <Button>Register</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle>Login</DialogTitle>
-          <DialogDescription>
-            Enter your credentials to access your account.
-          </DialogDescription>
+          <DialogTitle>Register</DialogTitle>
+          <DialogDescription>Create your account below.</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -88,7 +94,22 @@ export function Login() {
                 </FormItem>
               )}
             />
-
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input placeholder="shadcn" {...field} />
+                  </FormControl>
+                  <FormDescription>
+                    This is your public email address.
+                  </FormDescription>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
             <FormField
               control={form.control}
               name="password"
@@ -105,15 +126,17 @@ export function Login() {
                 </FormItem>
               )}
             />
-
             <FormMessage />
+            <FormDescription>
+              By registering, you agree to our terms and conditions.
+            </FormDescription>
             <DialogFooter>
               <DialogClose asChild>
                 <Button variant="outline" type="button">
                   Cancel
                 </Button>
               </DialogClose>
-              <Button type="submit">Login</Button>
+              <Button type="submit">Submit</Button>
             </DialogFooter>
           </form>
         </Form>

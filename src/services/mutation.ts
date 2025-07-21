@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { login, register } from "./api";
+import { getAddTocart, login, register } from "./api";
 import { useAuthStore } from "@/store/authStore";
 
 export function useRegister() {
@@ -24,6 +24,21 @@ export function useLogin() {
     },
     onError: (err) => {
       console.error("Login failed:", err);
+    },
+  });
+}
+
+export function useAddToCart() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (clotheId: string) => getAddTocart(clotheId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["cart"] });
+      console.log("Item added to cart successfully");
+    },
+    onError: (err) => {
+      console.error("Failed to add item to cart:", err);
     },
   });
 }

@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ShoppingCart, Flower, UserCircle } from "lucide-react";
-import { Register } from "./RegisterForm";
-import { Login } from "./LoginForm";
 import { useAuthStore } from "@/store/authStore";
-import { Logout } from "./Logout";
+import { Logout } from "./auth/Logout";
 import { Button } from "./ui/button";
+import { Login } from "./auth/LoginForm";
+import { Register } from "./auth/RegisterForm";
 
 export default function Navbar() {
   const { isAuthenticated, username } = useAuthStore();
@@ -26,10 +26,12 @@ export default function Navbar() {
         <li className="flex gap-2 items-center">
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <Button variant="secondary">
-                <UserCircle className="w-4 h-4" />
-                {username}
-              </Button>
+              <Link to="/profile">
+                <Button variant="secondary">
+                  <UserCircle className="w-4 h-4" />
+                  {username}
+                </Button>
+              </Link>
               <Logout />
             </div>
           ) : (

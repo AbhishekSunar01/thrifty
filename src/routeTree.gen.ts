@@ -9,11 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as _errorRouteImport } from './routes/__error'
 import { Route as IndexRouteImport } from './routes/index'
 
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
@@ -38,11 +44,13 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -50,13 +58,14 @@ export interface FileRoutesById {
   '/__error': typeof _errorRoute
   '/about': typeof AboutRoute
   '/cart': typeof CartRoute
+  '/profile': typeof ProfileRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/cart'
+  fullPaths: '/' | '/about' | '/cart' | '/profile'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/cart'
-  id: '__root__' | '/' | '/__error' | '/about' | '/cart'
+  to: '/' | '/about' | '/cart' | '/profile'
+  id: '__root__' | '/' | '/__error' | '/about' | '/cart' | '/profile'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -64,10 +73,18 @@ export interface RootRouteChildren {
   _errorRoute: typeof _errorRoute
   AboutRoute: typeof AboutRoute
   CartRoute: typeof CartRoute
+  ProfileRoute: typeof ProfileRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cart': {
       id: '/cart'
       path: '/cart'
@@ -104,6 +121,7 @@ const rootRouteChildren: RootRouteChildren = {
   _errorRoute: _errorRoute,
   AboutRoute: AboutRoute,
   CartRoute: CartRoute,
+  ProfileRoute: ProfileRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

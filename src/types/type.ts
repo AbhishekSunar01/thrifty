@@ -9,3 +9,18 @@ type LoginDto = {
   username: string;
   password: string;
 };
+
+type Category = {
+  id: string;
+  name: string;
+  count: number;
+};
+
+type Clothe = {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  categoryId: string;
+  images: { url: string }[];
+};
