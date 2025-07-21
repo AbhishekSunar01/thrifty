@@ -31,7 +31,7 @@ export const getAllClothes = async () => {
 
 export const getAddTocart = async (clotheId: string) => {
   const response = await axiosInstance.post(
-    `api/cart/add?clotheId=${clotheId}&quantity=1`
+    `api/cart/add?clotheId=${clotheId}`
   );
   return response.data;
 };

@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAddTocart, login, register } from "./api";
 import { useAuthStore } from "@/store/authStore";
+import { toast } from "sonner";
 
 export function useRegister() {
   return useMutation({
@@ -35,10 +36,16 @@ export function useAddToCart() {
     mutationFn: (clotheId: string) => getAddTocart(clotheId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["cart"] });
+      toast.success("Item added to cart successfully");
       console.log("Item added to cart successfully");
     },
-    onError: (err) => {
-      console.error("Failed to add item to cart:", err);
+    onError: (error: any) => {
+      console.error("Failed to add item to cart:", error);
+      if (error?.response?.status === 409) {
+        toast.error("Item already exists in cart");
+      } else {
+        toast.error("Failed to add item to cart");
+      }
     },
   });
 }

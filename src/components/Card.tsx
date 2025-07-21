@@ -9,6 +9,14 @@ export default function ClotheCard({ clothe }: { clothe: any }) {
     ? `http://localhost:8080${clothe.images[0].url}`
     : "/fallback.jpg";
 
+  const handleAddToCart = () => {
+    if (clothe.id) {
+      addToCart.mutate(clothe.id);
+    } else {
+      console.error("Clothe ID is missing");
+    }
+  };
+
   return (
     <Card className="hover:shadow-lg transition-shadow duration-300 flex flex-col py-0 overflow-hidden ">
       <img
